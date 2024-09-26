@@ -48,9 +48,9 @@ class Journal
         foreach (string line in File.ReadAllLines(file))
         {
             string[] parts = line.Split('|');
-            if (parts.Length == 3)
+            if (parts.Length == 4)
             {
-                Entry entry = new Entry(parts[1], parts[2]) { _date = parts[0] };
+                Entry entry = new Entry(parts[1], parts[2], parts[3]) { _date = parts[0] };
                 _entries.Add(entry);
             }
         }
@@ -62,25 +62,28 @@ class Entry
     public string _date;
     private string _promptText;
     private string _entryText;
+    private string _dayRating;
 
-    public Entry(string promptText, string entryText)
+    public Entry(string promptText, string entryText, string dayRating)
     {
         DateTime theCurrentTime = DateTime.Now;
         string dateText = theCurrentTime.ToShortDateString();
         _date = dateText;
         _promptText = promptText;
         _entryText = entryText;
+        _dayRating = dayRating;
     }
 
     public void Display()
     {
         Console.WriteLine($"Date: {_date} -- Prompt: {_promptText}");
         Console.WriteLine($"{_entryText}");
+        Console.WriteLine($"Day Rating: {_dayRating}/10");
     }
 
     public override string ToString()
     {
-        return $"{_date}|{_promptText}|{_entryText}";
+        return $"{_date}|{_promptText}|{_entryText}|{_dayRating}";
     }
 }
 
@@ -156,7 +159,10 @@ class Program
         Console.WriteLine($"{prompt}");
         string response = Console.ReadLine();
 
-        Entry newEntry = new Entry(prompt, response);
+        Console.Write("How would you rate your day out of 10?: ");
+        string dayRating = Console.ReadLine();
+
+        Entry newEntry = new Entry(prompt, response, dayRating);
         journal.AddEntry(newEntry);
     }
 
